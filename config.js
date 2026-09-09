@@ -18,7 +18,7 @@
 
 window.QA_CONFIG = {
 
-firebaseConfig = {
+firebase: {
   apiKey: "AIzaSyA3rs8ayBY2UQdBzjXaO2YO7b4bTZc6KFM",
   authDomain: "question-auction.firebaseapp.com",
   databaseURL: "https://question-auction-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -26,7 +26,7 @@ firebaseConfig = {
   storageBucket: "question-auction.firebasestorage.app",
   messagingSenderId: "566767314848",
   appId: "1:566767314848:web:f301bf46b7e8922fc726c5"
-};
+},
 
   defaultRoom: "6학년",
 
