@@ -118,6 +118,7 @@ let mine = null;
 let tab = 'fact';
 let msg = '', msgKind = '';
 let busy = false;
+let bootCheck = false;   // 저장된 신분으로 다시 들어온 경우인지
 
 const $  = id => document.getElementById(id);
 const app = () => $('app');
@@ -148,11 +149,19 @@ async function connect(room){
     students = snap.students;
     if (me && me.role === 'student'){
       const found = students.find(s => s.sid === me.sid);
-      if (found && !typing) mine = found;
-      if (found && typing)  mine = Object.assign({}, found, {
-        fact: mine.fact, debate: mine.debate, reflect: mine.reflect
-      });
-      if (!mine) mine = found || mine;
+      if (!found && bootCheck){
+        // 선생님이 초기화했거나 기록이 사라진 경우 — 처음 화면으로
+        localStorage.removeItem('qa-me');
+        me = null; mine = null; bootCheck = false;
+        msg = ''; render();
+        return;
+      }
+      if (found){
+        bootCheck = true;
+        mine = typing
+          ? Object.assign({}, found, { fact:mine.fact, debate:mine.debate, reflect:mine.reflect })
+          : found;
+      }
     }
     if (!typing) render();
   });
@@ -162,6 +171,7 @@ async function join(room, name, role){
   if (!room.trim()) { say('방 번호를 적어 주세요.'); return; }
   if (!name.trim()) { say('이름을 적어 주세요.'); return; }
   busy = true; render();
+  bootCheck = false;
   me = { sid: uid(), name: name.trim(), role, room: room.trim() };
   saveMe();
   await connect(me.room);
@@ -590,10 +600,20 @@ function bindTeacher(){
   };
 }
 
+const studentFoot = () => `<div class="band band-soft" style="padding-top:20px;padding-bottom:20px">
+  <div class="inner"><button class="btn outD sm" id="leaveS">나가기</button>
+  <p class="cap" style="margin-top:10px">이름이나 역할을 잘못 골랐을 때 누르세요.</p></div></div>`;
+
 function render(){
   if (!me){ app().innerHTML = viewSetup(); bindSetup(); return; }
-  app().innerHTML = hero() + (me.role === 'teacher' ? teacherBody() : studentBody());
-  if (me.role === 'teacher') bindTeacher(); else bindStudent();
+  if (me.role === 'teacher'){
+    app().innerHTML = hero() + teacherBody();
+    bindTeacher();
+  } else {
+    app().innerHTML = hero() + studentBody() + studentFoot();
+    bindStudent();
+    if ($('leaveS')) $('leaveS').onclick = leave;
+  }
 }
 
 /* ══════════ 시작 ══════════ */
@@ -601,7 +621,9 @@ function render(){
   const saved = loadMe();
   if (saved && saved.room){
     me = saved;
-    try { await connect(me.room); } catch(e){ me = null; }
+    bootCheck = (saved.role === 'student');
+    try { await connect(me.room); }
+    catch(e){ me = null; bootCheck = false; }
   }
   render();
 })();
