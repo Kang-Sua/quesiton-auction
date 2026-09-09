@@ -18,19 +18,15 @@
 
 window.QA_CONFIG = {
 
-  firebase: null,
-
-  /* 예시 — 위 null을 지우고 이런 모양으로 붙여 넣으세요.
-  firebase: {
-    apiKey: "AIzaSy...",
-    authDomain: "내프로젝트.firebaseapp.com",
-    databaseURL: "https://내프로젝트-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "내프로젝트",
-    storageBucket: "내프로젝트.appspot.com",
-    messagingSenderId: "000000000000",
-    appId: "1:000000000000:web:abcdef"
-  },
-  */
+firebaseConfig = {
+  apiKey: "AIzaSyA3rs8ayBY2UQdBzjXaO2YO7b4bTZc6KFM",
+  authDomain: "question-auction.firebaseapp.com",
+  databaseURL: "https://question-auction-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "question-auction",
+  storageBucket: "question-auction.firebasestorage.app",
+  messagingSenderId: "566767314848",
+  appId: "1:566767314848:web:f301bf46b7e8922fc726c5"
+};
 
   defaultRoom: "6학년",
 
